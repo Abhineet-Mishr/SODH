@@ -1,6 +1,9 @@
 import type { ConvertResponse, DeduplicateResponse, PreviewRow } from '../types'
 
-const API_PREFIX = '/api/literature'
+const API_BASE =
+  import.meta.env.VITE_API_URL ?? 'http://localhost:8000'
+
+const API_PREFIX = `${API_BASE}/api/literature`
 
 async function parseResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
