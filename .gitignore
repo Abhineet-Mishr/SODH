@@ -4,4 +4,5 @@ logs/
 **/*.pyc
 frontend/node_modules/
 frontend/dist/
-
+.env.local
+.env.*

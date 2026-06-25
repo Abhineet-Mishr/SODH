@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { convertFile, deduplicateFiles, finalizeReview, saveReviewDecisions, updateFuzzyThreshold } from './lib/api'
-import type { ConvertResponse, DeduplicateResponse, PreviewRow } from './types'
+import type { ConvertResponse, DeduplicateResponse, PreviewRow, ProcessingReport } from './types'
 
 const conversionOptions = [
   { value: 'RIS_TO_CSV', label: 'RIS -> CSV' },
@@ -64,7 +64,7 @@ function App() {
   const fuzzyThreshold = useMemo(() => thresholdForMode(sensitivityMode, customThreshold), [sensitivityMode, customThreshold])
 
   const analytics = useMemo(() => {
-    const report = dedupeResult?.report ?? {}
+    const report: ProcessingReport = dedupeResult?.report ?? {}
     return [
       ['Records Imported', report.records_imported],
       ['After DOI Deduplication', report.records_after_doi],
@@ -72,7 +72,7 @@ function App() {
       ['After Exact Title Deduplication', report.records_after_exact_title],
       ['After Fuzzy Deduplication', report.records_after_fuzzy],
       ['Final Records', report.final_records],
-    ]
+    ] as const
   }, [dedupeResult])
 
   async function handleConvert() {
