@@ -7,7 +7,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
-from ..config import TEMP_DIR, BASE_URL
+from ..config import TEMP_DIR
 
 logger = logging.getLogger(__name__)
 TEMP_DIR.mkdir(parents=True, exist_ok=True)
