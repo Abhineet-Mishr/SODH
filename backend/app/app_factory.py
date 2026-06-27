@@ -12,6 +12,7 @@ from .routers.convert import router as convert_router
 from .routers.deduplicate import router as deduplicate_router
 from .routers.download import router as download_router
 from .routers.review import router as review_router
+from .routers.research_suggestions import router as research_suggestions_router
 from .services.cleanup import cleanup_expired_artifacts
 
 logger = logging.getLogger(__name__)
@@ -34,6 +35,7 @@ def create_app() -> FastAPI:
     app.include_router(deduplicate_router)
     app.include_router(review_router)
     app.include_router(download_router)
+    app.include_router(research_suggestions_router)
 
     @app.on_event("startup")
     def _startup_cleanup() -> None:

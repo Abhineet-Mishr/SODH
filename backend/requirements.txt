@@ -6,3 +6,4 @@ rapidfuzz
 openpyxl
 python-multipart
 
+google-genai
