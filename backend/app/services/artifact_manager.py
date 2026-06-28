@@ -241,7 +241,7 @@ def serialize_artifact(job_id: str, artifact: ArtifactRecord) -> dict[str, Any]:
         "artifact_id": artifact.artifact_id,
         "filename": artifact.filename,
         "download_url": (
-            f"https://sodh-backend.onrender.com"
+            f"https://sodh-5bsu.onrender.com"
             f"/api/literature/download/{job_id}/{artifact.artifact_id}"
         ),
         "mime_type": artifact.mime_type,
