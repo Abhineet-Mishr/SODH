@@ -6,4 +6,6 @@ frontend/node_modules/
 frontend/dist/
 .env.local
 .env.*
-*.tsbuildinfo
+*.tsbuildinfo.env
+npm.log
+uvicorn.log

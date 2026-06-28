@@ -20,23 +20,27 @@ class ResearchSuggestionService:
     def generate_suggestions(self, request: ResearchSuggestionRequest) -> ResearchSuggestionResponse:
         start_time = time.time()
 
-        # 1. Load and format prompt
+        # 1. Load system prompt
         try:
-            prompt_text = prompt_registry.load_prompt(
+            system_instruction = prompt_registry.load_prompt(
                 template_name="research_suggestions",
-                variables={"topic": request.topic, "purpose": request.purpose}
+                variables={}
             )
         except Exception as e:
             logger.error(f"Failed to load prompt: {e}")
             raise Exception("Internal Configuration Error: Missing prompt template.")
 
-        # 2. Call AI Provider
+        # 2. Construct User Input
+        user_prompt = f"Research Topic:\n{request.topic}\n\nPurpose:\n{request.purpose}"
+
+        # 3. Call AI Provider
         try:
             raw_response = self.provider.generate_structured_output(
-                prompt=prompt_text,
+                prompt=user_prompt,
                 response_schema=ResearchSuggestionData,
+                system_instruction=system_instruction,
                 temperature=0.7,
-                max_tokens=2048
+                max_tokens=8192
             )
         except Exception as e:
             logger.error(f"AI Provider failed: {e}")

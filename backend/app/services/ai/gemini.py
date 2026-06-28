@@ -21,20 +21,24 @@ class GeminiProvider(BaseLLMProvider):
             self.client = genai.Client(api_key=GEMINI_API_KEY)
         self.model_name = GEMINI_MODEL
 
-    def generate_structured_output(self, prompt: str, response_schema: Any, temperature: float = 0.7, max_tokens: int = 1024) -> Dict[str, Any]:
+    def generate_structured_output(self, prompt: str, response_schema: Any, system_instruction: str = None, temperature: float = 0.7, max_tokens: int = 1024) -> Dict[str, Any]:
         """Generates structured JSON output from Gemini based on the given prompt and schema."""
         logger.info(f"Calling Gemini ({self.model_name})")
 
         try:
+            config_args = {
+                "response_mime_type": "application/json",
+                "response_schema": response_schema,
+                "temperature": temperature,
+                "max_output_tokens": max_tokens,
+            }
+            if system_instruction:
+                config_args["system_instruction"] = system_instruction
+
             response = self.client.models.generate_content(
                 model=self.model_name,
                 contents=prompt,
-                config=types.GenerateContentConfig(
-                    response_mime_type="application/json",
-                    response_schema=response_schema,
-                    temperature=temperature,
-                    max_output_tokens=max_tokens,
-                ),
+                config=types.GenerateContentConfig(**config_args),
             )
 
             if not response.text:
