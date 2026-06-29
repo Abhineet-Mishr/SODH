@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User } from '../types';
-import { fetchMe } from '../api';
+import { authApi } from '../api';
 
 interface AuthContextType {
     user: User | null;
@@ -17,7 +17,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     useEffect(() => {
         if (token) {
-            fetchMe(token).then(setUser).catch(() => {
+            authApi.fetchMe(token).then(setUser).catch(() => {
                 localStorage.removeItem('token');
                 setToken(null);
                 setUser(null);

@@ -9,3 +9,9 @@ frontend/dist/
 *.tsbuildinfo.env
 npm.log
 uvicorn.log
+.venv/
+venv/
+sodh.db
+server.log
+test-results/
+tsconfig.tsbuildinfo

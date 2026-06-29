@@ -1,6 +1,6 @@
 import { AuthRequest, AuthResponse, RegisterRequest, User } from '../types';
 
-const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:8000';
+const API_BASE = (import.meta.env.VITE_API_URL ?? 'http://localhost:8000').replace(/\/+$/, '');
 const API_PREFIX = `${API_BASE}/api/auth`;
 
 export const authApi = {
@@ -17,7 +17,7 @@ export const authApi = {
       return response.json();
   },
 
-  register: async (email: string, password: string, security_key: string): Promise<AuthResponse> => {
+  register: async (email: string, password: string, security_key: string): Promise<User> => {
       const response = await fetch(`${API_PREFIX}/register`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
