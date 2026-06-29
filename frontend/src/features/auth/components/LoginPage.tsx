@@ -17,7 +17,7 @@ export function LoginPage() {
     setError('')
     setLoading(true)
 
-    try:
+    try {
       if (isForgotPassword) {
         if (!email || !password || !securityKey) {
           setError('Email, New Password, and Security Key are required.')
