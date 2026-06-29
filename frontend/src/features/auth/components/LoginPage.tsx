@@ -30,15 +30,18 @@ export function LoginPage() {
         setIsLogin(true)
       } else if (isLogin) {
         const response = await authApi.login(email, password)
-        login(response.access_token, response.user)
+        const user = await authApi.fetchMe(response.access_token)
+        login(response.access_token, user)
       } else {
         if (!securityKey) {
           setError('Security key is required for registration')
           setLoading(false)
           return
         }
-        const response = await authApi.register(email, password, securityKey)
-        login(response.access_token, response.user)
+        await authApi.register(email, password, securityKey)
+        const response = await authApi.login(email, password)
+        const user = await authApi.fetchMe(response.access_token)
+        login(response.access_token, user)
       }
     } catch (err: any) {
       setError(err.response?.data?.detail || 'An error occurred')

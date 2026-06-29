@@ -17,7 +17,7 @@ export const authApi = {
       return response.json();
   },
 
-  register: async (email: string, password: string, security_key: string): Promise<AuthResponse> => {
+  register: async (email: string, password: string, security_key: string): Promise<User> => {
       const response = await fetch(`${API_PREFIX}/register`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
