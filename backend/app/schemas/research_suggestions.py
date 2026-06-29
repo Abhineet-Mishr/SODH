@@ -2,8 +2,8 @@ from typing import List, Optional
 from pydantic import BaseModel, Field
 
 class ResearchSuggestionRequest(BaseModel):
-    topic: str = Field(..., min_length=3, max_length=1000, description="The biomedical research topic.")
-    purpose: str = Field("General brainstorming", max_length=500, description="The purpose or context of the research.")
+    topic: str = Field(..., min_length=3, max_length=300, description="The biomedical research topic.")
+    purpose: str = Field("General brainstorming", max_length=300, description="The purpose or context of the research.")
 
 class ResearchSuggestionData(BaseModel):
     summary: str = Field(..., description="A short summary of the topic context.")

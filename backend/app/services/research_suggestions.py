@@ -6,7 +6,6 @@ from pydantic import ValidationError
 
 from .ai.gemini import GeminiProvider
 from .ai.prompt_registry import prompt_registry
-from .credits import credit_service
 from ..schemas.research_suggestions import ResearchSuggestionRequest, ResearchSuggestionResponse, ResearchSuggestionData
 from ..config import FEATURE_A_CREDITS
 
@@ -60,8 +59,6 @@ class ResearchSuggestionService:
         processing_time = round(time.time() - start_time, 2)
 
         # 4. Deduct Credits
-        if not credit_service.deduct(FEATURE_A_CREDITS):
-            raise Exception("Insufficient credits.")
 
         # 5. Return Response
         return ResearchSuggestionResponse(

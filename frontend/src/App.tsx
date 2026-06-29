@@ -1,3 +1,5 @@
+import { AuthProvider, useAuth } from "./features/auth/context/AuthContext";
+import { LoginPage } from "./features/auth/components/LoginPage";
 import { useMemo, useState } from 'react'
 import { convertFile, deduplicateFiles, finalizeReview, saveReviewDecisions, updateFuzzyThreshold } from './lib/api'
 import type { ConvertResponse, DeduplicateResponse, PreviewRow, ProcessingReport } from './types'
@@ -47,6 +49,12 @@ function buildDecisionMap(rows: PreviewRow[]) {
 }
 
 function App() {
+  const { user, logout } = useAuth();
+
+  if (!user) {
+    return <LoginPage />;
+  }
+
   const [activeMainTab, setActiveMainTab] = useState<MainTabKey>('research-suggestions')
   const [activeTab, setActiveTab] = useState<TabKey>('convert')
   const [convertFileInput, setConvertFileInput] = useState<File | null>(null)
@@ -528,4 +536,10 @@ function App() {
   )
 }
 
-export default App
+export default function AppWrapper() {
+  return (
+    <AuthProvider>
+      <App />
+    </AuthProvider>
+  )
+}

@@ -7,6 +7,7 @@ export const fetchResearchSuggestions = async (request: ResearchSuggestionReques
   const response = await fetch(`${API_PREFIX}/research-suggestions`, {
     method: 'POST',
     headers: {
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(request),
