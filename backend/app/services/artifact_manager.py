@@ -7,7 +7,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
-from ..config import TEMP_DIR, BASE_URL
+from ..config import TEMP_DIR
 
 logger = logging.getLogger(__name__)
 TEMP_DIR.mkdir(parents=True, exist_ok=True)
@@ -241,7 +241,7 @@ def serialize_artifact(job_id: str, artifact: ArtifactRecord) -> dict[str, Any]:
         "artifact_id": artifact.artifact_id,
         "filename": artifact.filename,
         "download_url": (
-            f"https://sodh-backend.onrender.com"
+            f"https://sodh-5bsu.onrender.com"
             f"/api/literature/download/{job_id}/{artifact.artifact_id}"
         ),
         "mime_type": artifact.mime_type,

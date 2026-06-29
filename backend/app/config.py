@@ -45,3 +45,18 @@ SCREENING_COLUMNS = [
     "Reviewer",
     "Notes",
 ]
+
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+LLM_PROVIDER = os.getenv("LLM_PROVIDER", "gemini")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+FEATURE_A_CREDITS = int(os.getenv("FEATURE_A_CREDITS", "5"))
+
+DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite:///{BASE_DIR}/sodh.db")
+SECRET_KEY = os.getenv("SECRET_KEY", "your-super-secret-key-that-should-be-changed")
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7 # 7 days

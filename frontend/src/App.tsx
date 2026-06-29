@@ -1,6 +1,9 @@
+import { AuthProvider, useAuth } from "./features/auth/context/AuthContext";
+import { LoginPage } from "./features/auth/components/LoginPage";
 import { useMemo, useState } from 'react'
 import { convertFile, deduplicateFiles, finalizeReview, saveReviewDecisions, updateFuzzyThreshold } from './lib/api'
 import type { ConvertResponse, DeduplicateResponse, PreviewRow, ProcessingReport } from './types'
+import { ResearchSuggestionsPage } from './features/researchSuggestions'
 
 const conversionOptions = [
   { value: 'RIS_TO_CSV', label: 'RIS -> CSV' },
@@ -27,6 +30,7 @@ const sensitivityModes = [
 ] as const
 
 type TabKey = 'convert' | 'dedupe'
+type MainTabKey = 'literature-toolkit' | 'research-suggestions'
 type SensitivityMode = (typeof sensitivityModes)[number]['value']
 
 function thresholdForMode(mode: SensitivityMode, customThreshold: number) {
@@ -45,6 +49,13 @@ function buildDecisionMap(rows: PreviewRow[]) {
 }
 
 function App() {
+  const { user, logout } = useAuth();
+
+  if (!user) {
+    return <LoginPage />;
+  }
+
+  const [activeMainTab, setActiveMainTab] = useState<MainTabKey>('research-suggestions')
   const [activeTab, setActiveTab] = useState<TabKey>('convert')
   const [convertFileInput, setConvertFileInput] = useState<File | null>(null)
   const [conversion, setConversion] = useState(conversionOptions[0].value)
@@ -198,31 +209,70 @@ function App() {
   )
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
-      <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight">SODH Literature Toolkit</h1>
-            <p className="text-sm text-slate-600">Convert, merge, deduplicate, and export screening-ready study datasets.</p>
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col">
+      <header className="border-b border-slate-200 bg-white shadow-sm sticky top-0 z-10">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+          <div className="flex items-center gap-6">
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900">SODH</h1>
+            <nav className="hidden md:flex gap-2">
+              {(['literature-toolkit', 'research-suggestions'] as MainTabKey[]).map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveMainTab(tab)}
+                  className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                    activeMainTab === tab
+                      ? 'bg-blue-50 text-blue-700'
+                      : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                  }`}
+                >
+                  {tab === 'literature-toolkit' ? 'Literature Toolkit' : 'Research Suggestions'}
+                </button>
+              ))}
+            </nav>
           </div>
-          <div className="rounded-full bg-slate-100 px-4 py-2 text-sm text-slate-600">FastAPI - React - TypeScript</div>
+        </div>
+        {/* Mobile Navigation */}
+        <div className="md:hidden border-t border-slate-200 flex p-2 overflow-x-auto gap-2">
+           {(['literature-toolkit', 'research-suggestions'] as MainTabKey[]).map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveMainTab(tab)}
+                  className={`flex-shrink-0 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                    activeMainTab === tab
+                      ? 'bg-blue-50 text-blue-700'
+                      : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                  }`}
+                >
+                  {tab === 'literature-toolkit' ? 'Literature Toolkit' : 'Research Suggestions'}
+                </button>
+            ))}
         </div>
       </header>
 
-      <main className="mx-auto max-w-7xl px-6 py-8">
-        <div className="mb-4 flex gap-3">
-          {(['convert', 'dedupe'] as TabKey[]).map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`rounded-full px-4 py-2 text-sm font-medium transition ${
-                activeTab === tab ? 'bg-slate-900 text-white' : 'border border-slate-200 bg-white text-slate-700'
-              }`}
-            >
-              {tab === 'convert' ? 'Convert Files' : 'Deduplicate Studies'}
-            </button>
-          ))}
-        </div>
+      <main className="flex-1 mx-auto max-w-7xl px-6 py-8 w-full">
+        {activeMainTab === 'research-suggestions' ? (
+          <ResearchSuggestionsPage />
+        ) : (
+          <div className="animate-fade-in">
+            <div className="mb-8">
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">Literature Toolkit</h1>
+                <p className="text-gray-600">Convert, merge, deduplicate, and export screening-ready study datasets.</p>
+            </div>
+            <div className="mb-6 flex gap-3">
+              {(['convert', 'dedupe'] as TabKey[]).map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`rounded-full px-5 py-2.5 text-sm font-medium transition-all ${
+                    activeTab === tab
+                      ? 'bg-slate-900 text-white shadow-md'
+                      : 'border border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
+                  }`}
+                >
+                  {tab === 'convert' ? 'Convert Files' : 'Deduplicate Studies'}
+                </button>
+              ))}
+            </div>
 
         {error ? <div className="mb-4 rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-rose-700">{error}</div> : null}
         {status ? <div className="mb-4 rounded-lg border border-sky-200 bg-sky-50 px-4 py-3 text-sky-800">{status}</div> : null}
@@ -479,9 +529,17 @@ function App() {
             </div>
           </section>
         )}
+          </div>
+        )}
       </main>
     </div>
   )
 }
 
-export default App
+export default function AppWrapper() {
+  return (
+    <AuthProvider>
+      <App />
+    </AuthProvider>
+  )
+}
